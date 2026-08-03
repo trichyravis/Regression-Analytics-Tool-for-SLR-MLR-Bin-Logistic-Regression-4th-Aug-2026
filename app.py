@@ -74,6 +74,63 @@ div[data-testid="stMetric"] {{ background:white; border:1px solid #DDE8F1; borde
 .profile-card a:hover {{ text-decoration:underline; }}
 .footer {{ background:linear-gradient(115deg,#081F3A,#124A78); color:#E6F1F8; padding:22px; border-radius:16px; margin-top:28px; text-align:center; border-top:4px solid #F3C84B; }}
 .footer a {{ color:#F3C84B!important; font-weight:800; text-decoration:none; }}
+
+/* High-visibility sidebar controls across current Streamlit/BaseWeb versions */
+section[data-testid="stSidebar"] div[data-baseweb="select"] > div,
+section[data-testid="stSidebar"] div[data-baseweb="base-input"],
+section[data-testid="stSidebar"] div[data-testid="stFileUploaderDropzone"],
+section[data-testid="stSidebar"] [data-baseweb="tag"] {{ background-color:#FFFFFF!important; }}
+section[data-testid="stSidebar"] div[data-baseweb="select"] *,
+section[data-testid="stSidebar"] div[data-baseweb="base-input"] *,
+section[data-testid="stSidebar"] div[data-baseweb="popover"] *,
+section[data-testid="stSidebar"] input,
+section[data-testid="stSidebar"] textarea {{ color:#102A43!important; -webkit-text-fill-color:#102A43!important; opacity:1!important; }}
+section[data-testid="stSidebar"] div[data-baseweb="select"] svg {{ fill:#102A43!important; color:#102A43!important; }}
+section[data-testid="stSidebar"] [data-testid="stFileUploaderFileName"],
+section[data-testid="stSidebar"] [data-testid="stFileUploaderFileName"] *,
+section[data-testid="stSidebar"] [data-testid="stFileUploaderFile"] span,
+section[data-testid="stSidebar"] [data-testid="stFileUploaderFile"] small {{ color:#102A43!important; -webkit-text-fill-color:#102A43!important; font-weight:700!important; }}
+section[data-testid="stSidebar"] [data-baseweb="tag"] span {{ color:#FFFFFF!important; -webkit-text-fill-color:#FFFFFF!important; }}
+section[data-testid="stSidebar"] [data-baseweb="tag"] {{ background:#E45756!important; border-radius:7px!important; }}
+
+/* Make the primary analysis action impossible to miss */
+section[data-testid="stSidebar"] .stButton > button,
+section[data-testid="stSidebar"] [data-testid="stBaseButton-primary"] {{
+  background:linear-gradient(135deg,#F3C84B,#D4A017)!important;
+  color:#071A2F!important; border:2px solid #FFF1A8!important;
+  min-height:52px!important; font-size:1rem!important; font-weight:900!important;
+  box-shadow:0 8px 20px rgba(0,0,0,.28)!important;
+}}
+section[data-testid="stSidebar"] .stButton > button p,
+section[data-testid="stSidebar"] [data-testid="stBaseButton-primary"] p {{ color:#071A2F!important; font-weight:900!important; }}
+section[data-testid="stSidebar"] .stButton > button:hover {{ background:linear-gradient(135deg,#FFE27A,#F3C84B)!important; transform:translateY(-1px); }}
+
+/* Prominent, responsive result-navigation cards */
+div[data-testid="stTabs"] div[data-baseweb="tab-list"],
+.stTabs div[role="tablist"] {{
+  gap:10px!important; flex-wrap:wrap!important; background:#D8E3ED!important;
+  padding:11px!important; border-radius:15px!important; border:1px solid #C3D2DE!important;
+}}
+div[data-testid="stTabs"] button[role="tab"],
+.stTabs button[data-baseweb="tab"] {{
+  flex:1 1 145px!important; min-height:54px!important; padding:10px 14px!important;
+  background:linear-gradient(145deg,#0B2545,#124A78)!important;
+  border:2px solid #F3C84B!important; border-radius:11px!important;
+  box-shadow:0 4px 10px rgba(11,37,69,.17)!important;
+}}
+div[data-testid="stTabs"] button[role="tab"] p,
+div[data-testid="stTabs"] button[role="tab"] span,
+.stTabs button[data-baseweb="tab"] p {{ color:#F8D967!important; font-weight:900!important; font-size:.92rem!important; }}
+div[data-testid="stTabs"] button[role="tab"][aria-selected="true"],
+.stTabs button[data-baseweb="tab"][aria-selected="true"] {{
+  background:linear-gradient(135deg,#F3C84B,#D4A017)!important;
+  border-color:#0B2545!important; box-shadow:0 5px 13px rgba(212,160,23,.35)!important;
+}}
+div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] p,
+div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] span,
+.stTabs button[data-baseweb="tab"][aria-selected="true"] p {{ color:#071A2F!important; }}
+div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {{ display:none!important; }}
+@media(max-width:800px) {{ div[data-testid="stTabs"] button[role="tab"] {{ flex:1 1 46%!important; }} }}
 </style>
 """,
     unsafe_allow_html=True,
@@ -356,7 +413,7 @@ try:
         rmse=math.sqrt(np.mean(model.resid**2)); mae=np.mean(np.abs(model.resid))
         st.markdown(f"## {model_name} results")
         c=st.columns(6); c[0].metric("Observations",int(model.nobs)); c[1].metric("R²",f"{model.rsquared:.4f}"); c[2].metric("Adjusted R²",f"{model.rsquared_adj:.4f}"); c[3].metric("Model p-value",f"{model.f_pvalue:.4g}"); c[4].metric("RMSE",f"{rmse:.4f}"); c[5].metric("MAE",f"{mae:.4f}")
-        tabs=st.tabs(["Executive Summary","Coefficients","Visual Analysis","Diagnostics","Predictions","Learning Corner","Excel Report"])
+        tabs=st.tabs(["📌 Executive Summary","β Coefficients","📊 Visual Analysis","🩺 Diagnostics","🎯 Predictions","🎓 Learning Corner","📥 Excel Report"])
         with tabs[0]:
             verdict="statistically significant" if model.f_pvalue<.05 else "not statistically significant at 5%"
             st.markdown(f"<div class='good'><b>Overall model:</b> {verdict}. The selected X variables explain <b>{model.rsquared:.1%}</b> of the sample variation in {y_col}.</div>",unsafe_allow_html=True)
@@ -379,7 +436,7 @@ try:
         mv=metrics.set_index("Metric")["Value"]
         st.markdown("## Binary Logistic Regression results")
         c=st.columns(6); c[0].metric("Observations",int(mv["Observations"])); c[1].metric("ROC AUC",f"{mv['ROC AUC']:.4f}"); c[2].metric("Accuracy",f"{mv['Accuracy']:.1%}"); c[3].metric("Sensitivity",f"{mv['Sensitivity / Recall']:.1%}"); c[4].metric("Specificity",f"{mv['Specificity']:.1%}"); c[5].metric("F1 Score",f"{mv['F1 Score']:.4f}")
-        tabs=st.tabs(["Executive Summary","Odds Ratios","ROC & Classification","Diagnostics","Predictions","Learning Corner","Excel Report"])
+        tabs=st.tabs(["📌 Executive Summary","β Odds Ratios","📈 ROC & Classification","🩺 Diagnostics","🎯 Predictions","🎓 Learning Corner","📥 Excel Report"])
         with tabs[0]:
             st.markdown(f"<div class='good'><b>Event definition:</b> {event_label} is coded 1. ROC AUC is <b>{mv['ROC AUC']:.3f}</b>; accuracy at the {cutoff:.2f} cutoff is <b>{mv['Accuracy']:.1%}</b>.</div>",unsafe_allow_html=True)
             st.dataframe(styled_table(metrics,{"Value":"{:.6f}"}),use_container_width=True)
