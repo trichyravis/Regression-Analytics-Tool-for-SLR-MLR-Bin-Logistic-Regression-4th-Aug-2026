@@ -1,3 +1,4 @@
+
 import io
 import math
 from datetime import datetime
@@ -20,17 +21,17 @@ from statsmodels.stats.stattools import durbin_watson, jarque_bera
 
 
 st.set_page_config(
-    page_title="MP1 Regression Laboratory",
-    page_icon="📊",
+    page_title="Regression Analytics Studio | Mountain Path Academy",
+    page_icon="〽️",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-NAVY = "#071E3D"
-NAVY_2 = "#0B3158"
-GOLD = "#F4B400"
-GOLD_2 = "#FFD166"
-BLUE = "#2E86DE"
+NAVY = "#0B2545"
+NAVY_2 = "#124A78"
+GOLD = "#F3C84B"
+GOLD_2 = "#D4A017"
+BLUE = "#0B5CAD"
 GREEN = "#1E9E64"
 RED = "#D64545"
 PURPLE = "#7B61FF"
@@ -39,34 +40,40 @@ CREAM = "#FFF9E8"
 st.markdown(
     f"""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@700&display=swap');
-.stApp {{ background: linear-gradient(180deg,#F7FAFD 0%,#EEF4F9 100%); color:#172B3A; }}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');
+.stApp {{ background:linear-gradient(180deg,#F8FAFD,#EAF1F7); color:#172B3A; }}
 html, body, [class*="css"] {{ font-family:'Inter',sans-serif; }}
-[data-testid="stSidebar"] {{ background:linear-gradient(180deg,{NAVY} 0%,{NAVY_2} 100%); }}
+[data-testid="stSidebar"] {{ background:linear-gradient(180deg,#081F3A,#124A78); color:#F7FAFC; }}
 [data-testid="stSidebar"] * {{ color:#FFFFFF !important; }}
 [data-testid="stSidebar"] label {{ font-weight:700 !important; color:{GOLD_2} !important; }}
 [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] > div,
 [data-testid="stSidebar"] .stMultiSelect div[data-baseweb="select"] > div {{ background:#FFFFFF !important; color:#102A43 !important; }}
 [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] span,
 [data-testid="stSidebar"] .stMultiSelect div[data-baseweb="select"] span {{ color:#102A43 !important; }}
-.hero {{ background:linear-gradient(120deg,{NAVY} 0%,#124E78 72%,#176B87 100%); padding:2rem 2.2rem; border-radius:20px; color:white; box-shadow:0 14px 35px rgba(7,30,61,.18); border-bottom:5px solid {GOLD}; }}
-.hero h1 {{ font-family:'Merriweather',serif; font-size:2.35rem; margin:0; }}
-.hero p {{ font-size:1.05rem; margin:.65rem 0 0; color:#E9F4FF; }}
-.gold-line {{ width:95px; height:4px; background:{GOLD}; border-radius:5px; margin:.9rem 0; }}
+.hero {{ background:linear-gradient(120deg,#071A2F 0%,#0B3B67 58%,#A97908 145%); padding:30px 34px; border-radius:22px; color:white; box-shadow:0 14px 34px rgba(7,26,47,.22); margin-bottom:16px; border:1px solid rgba(243,200,75,.35); }}
+.hero h1 {{ font-size:2.25rem; margin:0 0 8px; color:white; font-weight:900; }}
+.hero p {{ margin:0; color:#DDEAF4; line-height:1.55; }}
+.eyebrow {{ color:#F3C84B; text-transform:uppercase; letter-spacing:.14em; font-weight:900; font-size:.76rem; margin-bottom:.55rem; }}
 .mp-card {{ background:#FFFFFF; border:1px solid #DCE7F0; border-radius:16px; padding:1rem 1.15rem; box-shadow:0 7px 20px rgba(20,55,85,.07); height:100%; }}
 .mp-card h3 {{ color:{NAVY}; margin:.1rem 0 .5rem; }}
 .callout {{ background:{CREAM}; border-left:6px solid {GOLD}; border-radius:10px; padding:.9rem 1rem; margin:.7rem 0; }}
 .good {{ background:#E9F8F0; border-left:6px solid {GREEN}; border-radius:10px; padding:.8rem 1rem; }}
 .warn {{ background:#FFF0F0; border-left:6px solid {RED}; border-radius:10px; padding:.8rem 1rem; }}
 div[data-testid="stMetric"] {{ background:white; border:1px solid #DDE8F1; border-top:4px solid {GOLD}; padding:12px; border-radius:13px; box-shadow:0 5px 15px rgba(20,55,85,.06); }}
-.stTabs [data-baseweb="tab-list"] {{ gap:8px; flex-wrap:wrap; }}
-.stTabs [data-baseweb="tab"] {{ background:{NAVY}; color:{GOLD_2}; border-radius:9px 9px 0 0; padding:10px 16px; font-weight:700; }}
-.stTabs [aria-selected="true"] {{ background:{GOLD} !important; color:{NAVY} !important; }}
-.stButton > button, .stDownloadButton > button {{ background:{GOLD}; color:{NAVY}; border:0; border-radius:10px; font-weight:800; padding:.65rem 1.2rem; }}
-.stButton > button:hover, .stDownloadButton > button:hover {{ background:{GOLD_2}; color:{NAVY}; }}
-.profile {{ background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.17); border-radius:14px; padding:1rem; margin-top:1rem; }}
-.footer {{ background:{NAVY}; color:white; border-top:5px solid {GOLD}; padding:1.4rem; border-radius:15px; margin-top:2rem; text-align:center; }}
-.footer a {{ color:{GOLD_2}; text-decoration:none; font-weight:700; }}
+.stTabs [data-baseweb="tab-list"] {{ gap:9px!important; flex-wrap:wrap!important; background:#D8E3ED!important; padding:10px!important; border-radius:14px!important; }}
+.stTabs button[data-baseweb="tab"] {{ flex:1 1 130px!important; min-height:50px!important; background:#0B2545!important; border:2px solid #F3C84B!important; border-radius:10px!important; color:#F3C84B!important; }}
+.stTabs button[data-baseweb="tab"] p {{ color:#F3C84B!important; font-weight:850!important; }}
+.stTabs button[data-baseweb="tab"][aria-selected="true"] {{ background:linear-gradient(135deg,#F3C84B,#D4A017)!important; }}
+.stTabs button[data-baseweb="tab"][aria-selected="true"] p {{ color:#071A2F!important; }}
+.stButton button,.stDownloadButton button {{ background:#0B3B67!important; color:white!important; border-radius:10px!important; font-weight:800!important; }}
+.profile-card {{ margin-top:14px; padding:15px; border:1px solid rgba(243,200,75,.5); border-radius:14px; background:rgba(255,255,255,.07); }}
+.profile-card .profile-name {{ color:#F3C84B; font-size:1rem; font-weight:900; margin-bottom:5px; }}
+.profile-card .profile-role {{ color:#F7FAFC; font-size:.78rem; line-height:1.45; }}
+.profile-card .profile-links {{ margin-top:10px; }}
+.profile-card a {{ color:#F3C84B!important; font-size:.78rem; font-weight:800; text-decoration:none; }}
+.profile-card a:hover {{ text-decoration:underline; }}
+.footer {{ background:linear-gradient(115deg,#081F3A,#124A78); color:#E6F1F8; padding:22px; border-radius:16px; margin-top:28px; text-align:center; border-top:4px solid #F3C84B; }}
+.footer a {{ color:#F3C84B!important; font-weight:800; text-decoration:none; }}
 </style>
 """,
     unsafe_allow_html=True,
@@ -259,19 +266,43 @@ def plot_linear(work,y_col,x_cols,model,pred):
 
 def profile_block():
     st.sidebar.markdown("---")
-    st.sidebar.markdown("### 👨‍🏫 Prof. V. Ravichandran")
     st.sidebar.markdown("""
-<div class="profile"><b>Founder — The Mountain Path Academy</b><br><br>
-MS (Information Technology) • MBA (Finance)<br><br>
-28+ years of industry experience, including wholesale banking risk management; 10+ years of management education and executive learning.<br><br>
-<b>Teaching:</b> Financial Risk Management, Derivatives, Investments, Financial Analytics, Valuation and Applied Finance through Excel/Python.
+<div class="profile-card">
+  <div class="profile-name">Prof. V. Ravichandran</div>
+  <div class="profile-role">Faculty · Finance, Risk &amp; Quantitative Analytics<br>28+ years in corporate finance and banking · 10+ years in academia</div>
+  <div class="profile-links">
+    <a href="https://www.linkedin.com/in/trichyravis" target="_blank">LinkedIn ↗</a> &nbsp;·&nbsp;
+    <a href="https://github.com/trichyravis" target="_blank">GitHub ↗</a><br>
+    <a href="https://themountainpathacademy.com/about.html" target="_blank">Full faculty profile ↗</a>
+    <br><br><strong>Mountain Path Academy</strong><br>
+    <a href="https://themountainpathacademy.com/courses" target="_blank">Explore courses</a> &nbsp;·&nbsp;
+    <a href="https://themountainpathacademy.com/contact" target="_blank">Contact &amp; enrol</a>
+  </div>
 </div>""",unsafe_allow_html=True)
-    st.sidebar.link_button("🌐 Mountain Path Academy","https://themountainpathacademy.com/",use_container_width=True)
 
 
-st.markdown("""<div class="hero"><h1>Regression Analytics Laboratory</h1><div class="gold-line"></div><p>Simple Linear Regression • Multiple Linear Regression • Binary Logistic Regression</p><p>Upload your data, build the model, diagnose assumptions, interpret results and download a complete Excel report.</p></div>""",unsafe_allow_html=True)
+def render_footer():
+    st.markdown("""
+<div class='footer'>
+  <strong>Prof. V. Ravichandran · The Mountain Path Academy</strong><br>
+  Visiting Faculty — NMIMS Bangalore · BITS Pilani (WILP) · RV University Bangalore · Goa Institute of Management<br>
+  28+ years in corporate finance and banking · Finance, Risk Management &amp; Quantitative Analytics<br><br>
+  <a href='https://www.linkedin.com/in/trichyravis' target='_blank'>LinkedIn</a> &nbsp;·&nbsp;
+  <a href='https://github.com/trichyravis' target='_blank'>GitHub</a> &nbsp;·&nbsp;
+  <a href='https://themountainpathacademy.com/about.html' target='_blank'>Full faculty profile</a>
+  <br><br><strong>Mountain Path Academy</strong> &nbsp;
+  <a href='https://themountainpathacademy.com/courses' target='_blank'><strong>Explore courses</strong></a> &nbsp;·&nbsp;
+  <a href='https://themountainpathacademy.com/contact' target='_blank'><strong>Contact &amp; enrol</strong></a><br>
+  <small>Regression Analytics Studio · Educational material only · Model output is not a substitute for professional judgement</small>
+</div>
+""",unsafe_allow_html=True)
 
-st.sidebar.markdown("## MP1 Control Centre")
+
+st.markdown("""<div class="hero"><div class="eyebrow">Mountain Path Academy · Financial Analytics Studio</div><h1>Regression Analytics Laboratory</h1><p>Simple Linear Regression · Multiple Linear Regression · Binary Logistic Regression</p><p>Transform your own Excel data into model estimates, statistical diagnostics, interactive learning visuals and a professionally formatted report.</p></div>""",unsafe_allow_html=True)
+
+st.sidebar.markdown("## 〽️ Mountain Path Academy")
+st.sidebar.caption("Regression analytics learning laboratory")
+st.sidebar.markdown("### Model Control Centre")
 uploaded=st.sidebar.file_uploader("Upload Excel or CSV",type=["xlsx","xlsm","csv"])
 profile_block()
 
@@ -281,6 +312,7 @@ if uploaded is None:
     with c2: st.markdown("<div class='mp-card'><h3>② Model</h3>Select SLR/MLR for continuous Y or logistic regression for binary Y.</div>",unsafe_allow_html=True)
     with c3: st.markdown("<div class='mp-card'><h3>③ Interpret</h3>Review inference, assumptions, visual diagnostics and export the analysis.</div>",unsafe_allow_html=True)
     st.info("Upload a dataset from the left sidebar to begin.")
+    render_footer()
     st.stop()
 
 try: sheets=read_file(uploaded.getvalue(),uploaded.name)
@@ -366,5 +398,4 @@ except Exception as e:
     st.error(f"Analysis could not be completed: {e}")
     st.info("Check that the selected variables contain usable values, Y is appropriate for the chosen model, both logistic classes are represented, and the number of predictors is reasonable for the sample size.")
 
-st.markdown("""<div class='footer'><b>Prof. V. Ravichandran</b> • Founder, The Mountain Path Academy<br>Applied Finance • Risk Management • Financial Analytics • Python & Excel Learning<br><a href='https://themountainpathacademy.com/' target='_blank'>themountainpathacademy.com</a><br><small>Educational analytics application. Model outputs are estimates and should be interpreted with statistical and domain judgement.</small></div>""",unsafe_allow_html=True)
-
+render_footer()
