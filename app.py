@@ -1,8 +1,8 @@
 
-
 import io
 import math
 from datetime import datetime
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -100,6 +100,22 @@ section[data-testid="stSidebar"] [data-testid="stFileUploaderFile"] small {{ col
 section[data-testid="stSidebar"] [data-baseweb="tag"] span {{ color:#FFFFFF!important; -webkit-text-fill-color:#FFFFFF!important; }}
 section[data-testid="stSidebar"] [data-baseweb="tag"] {{ background:#E45756!important; border-radius:7px!important; }}
 
+/* Keep every file-uploader instruction and button label readable */
+section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button {{
+  background:linear-gradient(135deg,#F3C84B,#D4A017)!important;
+  border:1px solid #FFF1A8!important; color:#071A2F!important;
+  min-width:120px!important; font-weight:900!important;
+}}
+section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button *,
+section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button p {{
+  color:#071A2F!important; -webkit-text-fill-color:#071A2F!important; opacity:1!important;
+}}
+section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] > div > div,
+section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] small,
+section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] span {{
+  color:#40566A!important; -webkit-text-fill-color:#40566A!important; opacity:1!important;
+}}
+
 /* Make the primary analysis action impossible to miss */
 section[data-testid="stSidebar"] .stButton > button,
 section[data-testid="stSidebar"] [data-testid="stBaseButton-primary"] {{
@@ -137,6 +153,21 @@ div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] p,
 div[data-testid="stTabs"] button[role="tab"][aria-selected="true"] span,
 .stTabs button[data-baseweb="tab"][aria-selected="true"] p {{ color:#071A2F!important; }}
 div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {{ display:none!important; }}
+
+/* Streamlit Cloud uploader: force Browse files label to remain visible */
+section[data-testid="stSidebar"] [data-testid="stFileUploader"] button,
+section[data-testid="stSidebar"] button[data-testid="stBaseButton-secondary"] {{
+  background:linear-gradient(135deg,#F3C84B,#D4A017)!important;
+  border:2px solid #FFF1A8!important; color:#071A2F!important;
+  min-width:128px!important; min-height:42px!important;
+  font-weight:900!important; opacity:1!important;
+}}
+section[data-testid="stSidebar"] [data-testid="stFileUploader"] button *,
+section[data-testid="stSidebar"] button[data-testid="stBaseButton-secondary"] *,
+section[data-testid="stSidebar"] button[data-testid="stBaseButton-secondary"] p {{
+  color:#071A2F!important; -webkit-text-fill-color:#071A2F!important;
+  visibility:visible!important; opacity:1!important; font-weight:900!important;
+}}
 @media(max-width:800px) {{ div[data-testid="stTabs"] button[role="tab"] {{ flex:1 1 46%!important; }} }}
 </style>
 """,
@@ -362,37 +393,97 @@ def render_footer():
 """,unsafe_allow_html=True)
 
 
+def render_educational_tool():
+    st.markdown("## 📚 Regression Educational Tool")
+    st.markdown("""<div class='teaching-note'><b>How to use this section:</b> Begin with the business question and the type of dependent variable. Then select the correct model, interpret its coefficients, assess fit and assumptions, and validate performance before using the results.</div>""",unsafe_allow_html=True)
+    t1,t2,t3=st.tabs(["SLR","MLR","Logistic Regression"])
+    with t1:
+        st.markdown(r"""### Simple Linear Regression
+**Purpose:** Explain or predict one continuous dependent variable using one numeric independent variable.
+
+**Model:**  \(Y = \\beta_0 + \\beta_1X + \\varepsilon\)
+
+- **β₀ (intercept):** expected value of Y when X is zero.
+- **β₁ (slope):** expected change in Y for a one-unit increase in X.
+- **R²:** proportion of sample variation in Y explained by X.
+- **p-value and confidence interval:** evidence about whether the population slope differs from zero.
+- **Check:** linearity, independent errors, constant residual variance, residual normality and influential observations.
+
+**Example:** Estimate how advertising expenditure is associated with sales revenue.""")
+    with t2:
+        st.markdown(r"""### Multiple Linear Regression
+**Purpose:** Explain or predict one continuous dependent variable using two or more numeric independent variables.
+
+**Model:**  \(Y = \\beta_0 + \\beta_1X_1 + \\cdots + \\beta_kX_k + \\varepsilon\)
+
+- Interpret each coefficient as the expected change in Y for a one-unit change in that X, **holding the other included X variables constant**.
+- Use **adjusted R²** when comparing models with different numbers of predictors.
+- Use the overall **F-test** to assess whether the predictors jointly explain Y.
+- Review **VIF** for multicollinearity and residual plots for specification problems.
+- Statistical significance does not by itself establish causation or practical importance.
+
+**Example:** Explain firm profitability using sales growth, leverage and asset turnover.""")
+    with t3:
+        st.markdown(r"""### Binary Logistic Regression
+**Purpose:** Estimate the probability of an outcome with two classes, such as default/no default.
+
+**Model:**  \(\\log[p/(1-p)] = \\beta_0 + \\beta_1X_1 + \\cdots + \\beta_kX_k\)
+
+- A coefficient describes a change in **log-odds**; `exp(β)` is the **odds ratio**.
+- Odds ratio above 1 increases estimated event odds; below 1 decreases them, holding other predictors constant.
+- **ROC AUC** evaluates ranking ability across classification cutoffs.
+- **Sensitivity** measures event detection; **specificity** measures non-event detection.
+- Accuracy depends on the cutoff and class balance; inspect the confusion matrix and calibration.
+
+**Example:** Estimate probability of loan default using income, debt burden and credit history.""")
+    st.markdown("""<div class='callout'><b>Responsible interpretation:</b> Regression identifies conditional associations in the analysed sample. Always consider data quality, omitted variables, functional form, sample size, stability and out-of-sample validation. Model output supports judgement; it does not replace it.</div>""",unsafe_allow_html=True)
+
+
 st.markdown("""<div class="hero"><div class="eyebrow">Mountain Path Academy · Global Financial Analytics Studio</div><h1>Regression Analytics Laboratory</h1><p>Simple Linear Regression · Multiple Linear Regression · Binary Logistic Regression</p><p>Use your own data to estimate relationships, test statistical significance, validate model assumptions and translate regression output into practical decision insights.</p></div>""",unsafe_allow_html=True)
+
+intro_tabs=st.tabs(["🧭 How to Use This Tool","📚 Educational Tool"])
+with intro_tabs[0]:
+    st.markdown("## How to Use This Tool")
+    c1,c2,c3=st.columns(3)
+    with c1: st.markdown("<div class='concept-card'><h3>① Choose your data</h3><p>Start immediately with the built-in 100-customer practice dataset, or upload your own Excel/CSV file.</p></div>",unsafe_allow_html=True)
+    with c2: st.markdown("<div class='concept-card'><h3>② Select the model</h3><p>Choose SLR/MLR for a continuous Y or binary logistic regression for a two-category Y.</p></div>",unsafe_allow_html=True)
+    with c3: st.markdown("<div class='concept-card'><h3>③ Analyse and interpret</h3><p>Select Y and X, run the model, review diagnostics and predictions, then export the formatted Excel report.</p></div>",unsafe_allow_html=True)
+    st.markdown("""<div class='teaching-note'><b>Recommended first exercise:</b> Use the default dataset → Linear Regression → Y: <b>MonthlySpend_$</b> → X: <b>Income_000$</b>. Then extend it to MLR or select logistic regression with <b>Default</b> as Y.</div>""",unsafe_allow_html=True)
+    with st.expander("View default dataset exercises",expanded=False):
+        st.dataframe(pd.DataFrame([
+            {"Model":"SLR","Dependent variable (Y)":"MonthlySpend_$","Independent variable(s) (X)":"Income_000$"},
+            {"Model":"MLR","Dependent variable (Y)":"MonthlySpend_$","Independent variable(s) (X)":"Income_000$, LoanAmount_000$, DebtToIncome_%, Age, YearsEmployed"},
+            {"Model":"Logistic","Dependent variable (Y)":"Default","Independent variable(s) (X)":"CreditScore, Income_000$, DebtToIncome_%, InterestRate_%, LoanAmount_000$"},
+        ]),use_container_width=True,hide_index=True)
+with intro_tabs[1]:
+    render_educational_tool()
 
 st.sidebar.markdown("## 〽️ Mountain Path Academy")
 st.sidebar.caption("Global regression analytics laboratory")
 st.sidebar.markdown("### Model Control Centre")
-uploaded=st.sidebar.file_uploader("Upload Excel or CSV",type=["xlsx","xlsm","csv"])
+data_source=st.sidebar.radio("Dataset source",["Default practice dataset","Upload my own dataset"])
+uploaded=None
+if data_source=="Upload my own dataset":
+    uploaded=st.sidebar.file_uploader("Upload Excel or CSV",type=["xlsx","xlsm","csv"])
+    if uploaded is None:
+        profile_block()
+        st.info("The learning tabs above are ready. Upload an Excel or CSV file from the sidebar when you want to analyse your own data.")
+        render_footer()
+        st.stop()
+    source_bytes=uploaded.getvalue(); source_name=uploaded.name
+else:
+    default_path=Path(__file__).with_name("regression-practice-dataset-100.xlsx")
+    if not default_path.exists():
+        st.error("The default practice dataset is missing. Add regression-practice-dataset-100.xlsx beside the app.py file, or choose ‘Upload my own dataset’.")
+        profile_block(); render_footer(); st.stop()
+    source_bytes=default_path.read_bytes(); source_name=default_path.name
+    st.sidebar.success("Default dataset loaded: 100 synthetic customers")
 
-if uploaded is None:
-    profile_block()
-    c1,c2,c3=st.columns(3)
-    with c1: st.markdown("<div class='concept-card'><h3>① Upload your data</h3><p>Use an Excel or CSV dataset. Multiple Excel worksheets are supported.</p></div>",unsafe_allow_html=True)
-    with c2: st.markdown("<div class='concept-card'><h3>② Select a model</h3><p>Choose SLR or MLR for a continuous outcome, or logistic regression for a binary outcome.</p></div>",unsafe_allow_html=True)
-    with c3: st.markdown("<div class='concept-card'><h3>③ Interpret and export</h3><p>Review coefficients, diagnostics, predictions and learning notes, then download a formatted Excel report.</p></div>",unsafe_allow_html=True)
-
-    st.markdown("<h2 class='section-title'>About this educational tool</h2>",unsafe_allow_html=True)
-    st.markdown("""<div class='callout'><b>Purpose:</b> This interactive laboratory connects regression theory with hands-on analysis. It guides learners from variable selection and estimation to inference, diagnostics, prediction and responsible interpretation. It is designed for classroom demonstrations, guided practice and exploratory analysis—not as an automated decision engine.</div>""",unsafe_allow_html=True)
-    a1,a2,a3=st.columns(3)
-    with a1:
-        st.markdown("""<div class='model-card'><h3>Simple Linear Regression (SLR)</h3><p><b>Use when:</b> one numeric X explains or predicts one continuous Y.</p><p><b>Model:</b> Y = β₀ + β₁X + ε</p><ul><li>Interpret slope and intercept</li><li>Review R², p-values and confidence intervals</li><li>Check residual linearity, normality and constant variance</li></ul></div>""",unsafe_allow_html=True)
-    with a2:
-        st.markdown("""<div class='model-card'><h3>Multiple Linear Regression (MLR)</h3><p><b>Use when:</b> several numeric X variables explain or predict one continuous Y.</p><p><b>Model:</b> Y = β₀ + β₁X₁ + … + βₖXₖ + ε</p><ul><li>Interpret each coefficient holding other X variables constant</li><li>Compare R² and adjusted R²</li><li>Check VIF, residual diagnostics and specification</li></ul></div>""",unsafe_allow_html=True)
-    with a3:
-        st.markdown("""<div class='model-card'><h3>Binary Logistic Regression</h3><p><b>Use when:</b> Y has two outcomes such as default/no default.</p><p><b>Model:</b> log[p/(1−p)] = β₀ + β₁X₁ + … + βₖXₖ</p><ul><li>Interpret odds ratios and predicted probabilities</li><li>Review ROC AUC, sensitivity and specificity</li><li>Study cutoff effects, calibration and class balance</li></ul></div>""",unsafe_allow_html=True)
-
-    st.markdown("""<div class='teaching-note'><b>Learning workflow:</b> Frame the question → choose Y and X → estimate the model → assess statistical significance → test assumptions and fit → interpret practical meaning → validate before decision use.</div>""",unsafe_allow_html=True)
-    st.info("Upload a dataset from the left sidebar to begin.")
-    render_footer()
-    st.stop()
-
-try: sheets=read_file(uploaded.getvalue(),uploaded.name)
+try: sheets=read_file(source_bytes,source_name)
 except Exception as e: st.error(f"Could not read the file: {e}"); st.stop()
+
+if data_source=="Default practice dataset" and "Regression Data" in sheets:
+    sheets={"Regression Data":sheets["Regression Data"]}
 
 sheet=st.sidebar.selectbox("Worksheet",list(sheets)); df=sheets[sheet]
 model_choice=st.sidebar.radio("Regression model",["Linear Regression — SLR/MLR","Binary Logistic Regression"])
@@ -404,9 +495,14 @@ if model_choice.startswith("Linear"):
 else:
     y_options=[c for c in df.columns if 2 <= df[c].dropna().nunique() <= 20]
     if not y_options: st.error("No suitable categorical Y variable was detected."); st.stop()
-y_col=st.sidebar.selectbox("Dependent variable (Y)",y_options)
+y_default=(y_options.index("MonthlySpend_$") if model_choice.startswith("Linear") and "MonthlySpend_$" in y_options else y_options.index("Default") if not model_choice.startswith("Linear") and "Default" in y_options else 0)
+y_col=st.sidebar.selectbox("Dependent variable (Y)",y_options,index=y_default)
 x_options=[c for c in nums if c!=y_col]
-x_cols=st.sidebar.multiselect("Independent variable(s) (X)",x_options,default=x_options[:1])
+if data_source=="Default practice dataset" and model_choice.startswith("Binary"):
+    suggested_x=[c for c in ["CreditScore","Income_000$","DebtToIncome_%","InterestRate_%","LoanAmount_000$"] if c in x_options]
+else:
+    suggested_x=["Income_000$"] if "Income_000$" in x_options else x_options[:1]
+x_cols=st.sidebar.multiselect("Independent variable(s) (X)",x_options,default=suggested_x)
 missing=st.sidebar.selectbox("Missing-data treatment",["Remove incomplete rows","Median-impute numeric X/Y"])
 confidence=st.sidebar.select_slider("Confidence level",options=[.90,.95,.99],value=.95,format_func=lambda x:f"{x:.0%}")
 
@@ -419,7 +515,7 @@ profile_block()
 
 st.markdown("### Dataset overview")
 m1,m2,m3,m4=st.columns(4); m1.metric("Rows",f"{len(df):,}"); m2.metric("Columns",len(df.columns)); m3.metric("Numeric candidates",len(nums)); m4.metric("Missing cells",f"{int(df.isna().sum().sum()):,}")
-with st.expander("Preview uploaded data",expanded=False): st.dataframe(df.head(100),use_container_width=True,height=330)
+with st.expander("Preview selected dataset",expanded=False): st.dataframe(df.head(100),use_container_width=True,height=330)
 
 if not run:
     st.markdown("<div class='callout'><b>Ready:</b> choose the model and variables in the Model Control Centre, then click <b>Run Regression Analysis</b>.</div>",unsafe_allow_html=True)
@@ -434,7 +530,7 @@ try:
         rmse=math.sqrt(np.mean(model.resid**2)); mae=np.mean(np.abs(model.resid))
         st.markdown(f"## {model_name} results")
         c=st.columns(6); c[0].metric("Observations",int(model.nobs)); c[1].metric("R²",f"{model.rsquared:.4f}"); c[2].metric("Adjusted R²",f"{model.rsquared_adj:.4f}"); c[3].metric("Model p-value",f"{model.f_pvalue:.4g}"); c[4].metric("RMSE",f"{rmse:.4f}"); c[5].metric("MAE",f"{mae:.4f}")
-        tabs=st.tabs(["📌 Executive Summary","β Coefficients","📊 Visual Analysis","🩺 Diagnostics","🎯 Predictions","🎓 Learning Corner","📥 Excel Report"])
+        tabs=st.tabs(["📌 Executive Summary","β Coefficients","📊 Visual Analysis","🩺 Diagnostics","🎯 Predictions","🎓 Learning Corner","📚 Educational Tool","📥 Excel Report"])
         with tabs[0]:
             verdict="statistically significant" if model.f_pvalue<.05 else "not statistically significant at 5%"
             st.markdown(f"<div class='good'><b>Overall model:</b> {verdict}. The selected X variables explain <b>{model.rsquared:.1%}</b> of the sample variation in {y_col}.</div>",unsafe_allow_html=True)
@@ -450,14 +546,15 @@ try:
         with tabs[3]: st.markdown("#### Assumption tests"); st.dataframe(styled_table(diag,{"Statistic":"{:.4f}","p-value":"{:.6f}"}),use_container_width=True); st.markdown("#### Variance Inflation Factors"); st.dataframe(styled_table(vif,{"VIF":"{:.3f}"}),use_container_width=True)
         with tabs[4]: st.dataframe(pred,use_container_width=True,height=430)
         with tabs[5]: st.markdown("""<div class='callout'><b>Interpretation discipline</b><br>R² measures sample fit, not causality. A significant coefficient describes the expected change in Y for a one-unit change in X, holding the other included X variables constant. Always review linearity, independence, constant variance, residual normality, multicollinearity and influential observations.</div>""",unsafe_allow_html=True)
-        report=excel_report(model_name,uploaded.name,sheet,{"Analysis Data":work,"Coefficients":coeff,"Diagnostics":diag,"VIF":vif,"Predictions":pred},[("Y Variable",y_col),("X Variables",", ".join(x_cols)),("R-squared",model.rsquared),("Adjusted R-squared",model.rsquared_adj),("Model p-value",model.f_pvalue),("RMSE",rmse)])
-        with tabs[6]: st.download_button("⬇ Download formatted Excel report",report,f"MP1_{model_name.replace(' ','_')}_{datetime.now():%Y%m%d}.xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",use_container_width=True)
+        with tabs[6]: render_educational_tool()
+        report=excel_report(model_name,source_name,sheet,{"Analysis Data":work,"Coefficients":coeff,"Diagnostics":diag,"VIF":vif,"Predictions":pred},[("Y Variable",y_col),("X Variables",", ".join(x_cols)),("R-squared",model.rsquared),("Adjusted R-squared",model.rsquared_adj),("Model p-value",model.f_pvalue),("RMSE",rmse)])
+        with tabs[7]: st.download_button("⬇ Download formatted Excel report",report,f"MP1_{model_name.replace(' ','_')}_{datetime.now():%Y%m%d}.xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",use_container_width=True)
     else:
         work,mapping,dropped=prepare_logistic(df,y_col,x_cols,missing,event_label); model,coeff,pred,vif,metrics,matrix,cal=fit_logistic(work,y_col,x_cols,confidence,cutoff)
         mv=metrics.set_index("Metric")["Value"]
         st.markdown("## Binary Logistic Regression results")
         c=st.columns(6); c[0].metric("Observations",int(mv["Observations"])); c[1].metric("ROC AUC",f"{mv['ROC AUC']:.4f}"); c[2].metric("Accuracy",f"{mv['Accuracy']:.1%}"); c[3].metric("Sensitivity",f"{mv['Sensitivity / Recall']:.1%}"); c[4].metric("Specificity",f"{mv['Specificity']:.1%}"); c[5].metric("F1 Score",f"{mv['F1 Score']:.4f}")
-        tabs=st.tabs(["📌 Executive Summary","β Odds Ratios","📈 ROC & Classification","🩺 Diagnostics","🎯 Predictions","🎓 Learning Corner","📥 Excel Report"])
+        tabs=st.tabs(["📌 Executive Summary","β Odds Ratios","📈 ROC & Classification","🩺 Diagnostics","🎯 Predictions","🎓 Learning Corner","📚 Educational Tool","📥 Excel Report"])
         with tabs[0]:
             st.markdown(f"<div class='good'><b>Event definition:</b> {event_label} is coded 1. ROC AUC is <b>{mv['ROC AUC']:.3f}</b>; accuracy at the {cutoff:.2f} cutoff is <b>{mv['Accuracy']:.1%}</b>.</div>",unsafe_allow_html=True)
             st.dataframe(styled_table(metrics,{"Value":"{:.6f}"}),use_container_width=True)
@@ -470,8 +567,9 @@ try:
         with tabs[3]: st.markdown("#### Hosmer–Lemeshow calibration groups"); st.dataframe(cal,use_container_width=True); st.markdown("#### Variance Inflation Factors"); st.dataframe(styled_table(vif,{"VIF":"{:.3f}"}),use_container_width=True); st.plotly_chart(px.scatter(pred,x="Predicted Probability",y="Deviance Residual",title="Deviance Residuals versus Probability",color_discrete_sequence=[PURPLE]),use_container_width=True)
         with tabs[4]: st.dataframe(pred,use_container_width=True,height=430)
         with tabs[5]: st.markdown("""<div class='callout'><b>How to read odds ratios</b><br>An odds ratio above 1 increases estimated event odds; below 1 decreases them, holding other included predictors constant. ROC AUC measures ranking across cutoffs. Accuracy depends on cutoff and class balance. Validate the model on unseen data before decision use.</div>""",unsafe_allow_html=True)
-        report=excel_report("Binary Logistic Regression",uploaded.name,sheet,{"Analysis Data":work,"Class Mapping":pd.DataFrame([{"Original Category":k,"Binary Code":v} for k,v in mapping.items()]),"Model Metrics":metrics,"Odds Ratios":coeff,"Confusion Matrix":matrix,"HL Calibration":cal,"VIF":vif,"Predictions":pred},[("Y Variable",y_col),("Event coded 1",str(event_label)),("X Variables",", ".join(x_cols)),("ROC AUC",mv["ROC AUC"]),("Accuracy",mv["Accuracy"]),("Classification cutoff",cutoff)])
-        with tabs[6]: st.download_button("⬇ Download formatted Excel report",report,f"MP1_Logistic_Regression_{datetime.now():%Y%m%d}.xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",use_container_width=True)
+        with tabs[6]: render_educational_tool()
+        report=excel_report("Binary Logistic Regression",source_name,sheet,{"Analysis Data":work,"Class Mapping":pd.DataFrame([{"Original Category":k,"Binary Code":v} for k,v in mapping.items()]),"Model Metrics":metrics,"Odds Ratios":coeff,"Confusion Matrix":matrix,"HL Calibration":cal,"VIF":vif,"Predictions":pred},[("Y Variable",y_col),("Event coded 1",str(event_label)),("X Variables",", ".join(x_cols)),("ROC AUC",mv["ROC AUC"]),("Accuracy",mv["Accuracy"]),("Classification cutoff",cutoff)])
+        with tabs[7]: st.download_button("⬇ Download formatted Excel report",report,f"MP1_Logistic_Regression_{datetime.now():%Y%m%d}.xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",use_container_width=True)
 except Exception as e:
     st.error(f"Analysis could not be completed: {e}")
     st.info("Check that the selected variables contain usable values, Y is appropriate for the chosen model, both logistic classes are represented, and the number of predictors is reasonable for the sample size.")
