@@ -100,22 +100,6 @@ section[data-testid="stSidebar"] [data-testid="stFileUploaderFile"] small {{ col
 section[data-testid="stSidebar"] [data-baseweb="tag"] span {{ color:#FFFFFF!important; -webkit-text-fill-color:#FFFFFF!important; }}
 section[data-testid="stSidebar"] [data-baseweb="tag"] {{ background:#E45756!important; border-radius:7px!important; }}
 
-/* Keep every file-uploader instruction and button label readable */
-section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button {{
-  background:linear-gradient(135deg,#F3C84B,#D4A017)!important;
-  border:1px solid #FFF1A8!important; color:#071A2F!important;
-  min-width:120px!important; font-weight:900!important;
-}}
-section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button *,
-section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] button p {{
-  color:#071A2F!important; -webkit-text-fill-color:#071A2F!important; opacity:1!important;
-}}
-section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] > div > div,
-section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] small,
-section[data-testid="stSidebar"] [data-testid="stFileUploaderDropzone"] span {{
-  color:#40566A!important; -webkit-text-fill-color:#40566A!important; opacity:1!important;
-}}
-
 /* Make the primary analysis action impossible to miss */
 section[data-testid="stSidebar"] .stButton > button,
 section[data-testid="stSidebar"] [data-testid="stBaseButton-primary"] {{
@@ -378,52 +362,6 @@ def render_footer():
 """,unsafe_allow_html=True)
 
 
-def render_educational_tool():
-    st.markdown("## 📚 Regression Educational Tool")
-    st.markdown("""<div class='teaching-note'><b>How to use this section:</b> Begin with the business question and the type of dependent variable. Then select the correct model, interpret its coefficients, assess fit and assumptions, and validate performance before using the results.</div>""",unsafe_allow_html=True)
-    t1,t2,t3=st.tabs(["SLR","MLR","Logistic Regression"])
-    with t1:
-        st.markdown(r"""### Simple Linear Regression
-**Purpose:** Explain or predict one continuous dependent variable using one numeric independent variable.
-
-**Model:**  \(Y = \\beta_0 + \\beta_1X + \\varepsilon\)
-
-- **β₀ (intercept):** expected value of Y when X is zero.
-- **β₁ (slope):** expected change in Y for a one-unit increase in X.
-- **R²:** proportion of sample variation in Y explained by X.
-- **p-value and confidence interval:** evidence about whether the population slope differs from zero.
-- **Check:** linearity, independent errors, constant residual variance, residual normality and influential observations.
-
-**Example:** Estimate how advertising expenditure is associated with sales revenue.""")
-    with t2:
-        st.markdown(r"""### Multiple Linear Regression
-**Purpose:** Explain or predict one continuous dependent variable using two or more numeric independent variables.
-
-**Model:**  \(Y = \\beta_0 + \\beta_1X_1 + \\cdots + \\beta_kX_k + \\varepsilon\)
-
-- Interpret each coefficient as the expected change in Y for a one-unit change in that X, **holding the other included X variables constant**.
-- Use **adjusted R²** when comparing models with different numbers of predictors.
-- Use the overall **F-test** to assess whether the predictors jointly explain Y.
-- Review **VIF** for multicollinearity and residual plots for specification problems.
-- Statistical significance does not by itself establish causation or practical importance.
-
-**Example:** Explain firm profitability using sales growth, leverage and asset turnover.""")
-    with t3:
-        st.markdown(r"""### Binary Logistic Regression
-**Purpose:** Estimate the probability of an outcome with two classes, such as default/no default.
-
-**Model:**  \(\\log[p/(1-p)] = \\beta_0 + \\beta_1X_1 + \\cdots + \\beta_kX_k\)
-
-- A coefficient describes a change in **log-odds**; `exp(β)` is the **odds ratio**.
-- Odds ratio above 1 increases estimated event odds; below 1 decreases them, holding other predictors constant.
-- **ROC AUC** evaluates ranking ability across classification cutoffs.
-- **Sensitivity** measures event detection; **specificity** measures non-event detection.
-- Accuracy depends on the cutoff and class balance; inspect the confusion matrix and calibration.
-
-**Example:** Estimate probability of loan default using income, debt burden and credit history.""")
-    st.markdown("""<div class='callout'><b>Responsible interpretation:</b> Regression identifies conditional associations in the analysed sample. Always consider data quality, omitted variables, functional form, sample size, stability and out-of-sample validation. Model output supports judgement; it does not replace it.</div>""",unsafe_allow_html=True)
-
-
 st.markdown("""<div class="hero"><div class="eyebrow">Mountain Path Academy · Global Financial Analytics Studio</div><h1>Regression Analytics Laboratory</h1><p>Simple Linear Regression · Multiple Linear Regression · Binary Logistic Regression</p><p>Use your own data to estimate relationships, test statistical significance, validate model assumptions and translate regression output into practical decision insights.</p></div>""",unsafe_allow_html=True)
 
 st.sidebar.markdown("## 〽️ Mountain Path Academy")
@@ -496,7 +434,7 @@ try:
         rmse=math.sqrt(np.mean(model.resid**2)); mae=np.mean(np.abs(model.resid))
         st.markdown(f"## {model_name} results")
         c=st.columns(6); c[0].metric("Observations",int(model.nobs)); c[1].metric("R²",f"{model.rsquared:.4f}"); c[2].metric("Adjusted R²",f"{model.rsquared_adj:.4f}"); c[3].metric("Model p-value",f"{model.f_pvalue:.4g}"); c[4].metric("RMSE",f"{rmse:.4f}"); c[5].metric("MAE",f"{mae:.4f}")
-        tabs=st.tabs(["📌 Executive Summary","β Coefficients","📊 Visual Analysis","🩺 Diagnostics","🎯 Predictions","🎓 Learning Corner","📚 Educational Tool","📥 Excel Report"])
+        tabs=st.tabs(["📌 Executive Summary","β Coefficients","📊 Visual Analysis","🩺 Diagnostics","🎯 Predictions","🎓 Learning Corner","📥 Excel Report"])
         with tabs[0]:
             verdict="statistically significant" if model.f_pvalue<.05 else "not statistically significant at 5%"
             st.markdown(f"<div class='good'><b>Overall model:</b> {verdict}. The selected X variables explain <b>{model.rsquared:.1%}</b> of the sample variation in {y_col}.</div>",unsafe_allow_html=True)
@@ -512,15 +450,14 @@ try:
         with tabs[3]: st.markdown("#### Assumption tests"); st.dataframe(styled_table(diag,{"Statistic":"{:.4f}","p-value":"{:.6f}"}),use_container_width=True); st.markdown("#### Variance Inflation Factors"); st.dataframe(styled_table(vif,{"VIF":"{:.3f}"}),use_container_width=True)
         with tabs[4]: st.dataframe(pred,use_container_width=True,height=430)
         with tabs[5]: st.markdown("""<div class='callout'><b>Interpretation discipline</b><br>R² measures sample fit, not causality. A significant coefficient describes the expected change in Y for a one-unit change in X, holding the other included X variables constant. Always review linearity, independence, constant variance, residual normality, multicollinearity and influential observations.</div>""",unsafe_allow_html=True)
-        with tabs[6]: render_educational_tool()
         report=excel_report(model_name,uploaded.name,sheet,{"Analysis Data":work,"Coefficients":coeff,"Diagnostics":diag,"VIF":vif,"Predictions":pred},[("Y Variable",y_col),("X Variables",", ".join(x_cols)),("R-squared",model.rsquared),("Adjusted R-squared",model.rsquared_adj),("Model p-value",model.f_pvalue),("RMSE",rmse)])
-        with tabs[7]: st.download_button("⬇ Download formatted Excel report",report,f"MP1_{model_name.replace(' ','_')}_{datetime.now():%Y%m%d}.xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",use_container_width=True)
+        with tabs[6]: st.download_button("⬇ Download formatted Excel report",report,f"MP1_{model_name.replace(' ','_')}_{datetime.now():%Y%m%d}.xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",use_container_width=True)
     else:
         work,mapping,dropped=prepare_logistic(df,y_col,x_cols,missing,event_label); model,coeff,pred,vif,metrics,matrix,cal=fit_logistic(work,y_col,x_cols,confidence,cutoff)
         mv=metrics.set_index("Metric")["Value"]
         st.markdown("## Binary Logistic Regression results")
         c=st.columns(6); c[0].metric("Observations",int(mv["Observations"])); c[1].metric("ROC AUC",f"{mv['ROC AUC']:.4f}"); c[2].metric("Accuracy",f"{mv['Accuracy']:.1%}"); c[3].metric("Sensitivity",f"{mv['Sensitivity / Recall']:.1%}"); c[4].metric("Specificity",f"{mv['Specificity']:.1%}"); c[5].metric("F1 Score",f"{mv['F1 Score']:.4f}")
-        tabs=st.tabs(["📌 Executive Summary","β Odds Ratios","📈 ROC & Classification","🩺 Diagnostics","🎯 Predictions","🎓 Learning Corner","📚 Educational Tool","📥 Excel Report"])
+        tabs=st.tabs(["📌 Executive Summary","β Odds Ratios","📈 ROC & Classification","🩺 Diagnostics","🎯 Predictions","🎓 Learning Corner","📥 Excel Report"])
         with tabs[0]:
             st.markdown(f"<div class='good'><b>Event definition:</b> {event_label} is coded 1. ROC AUC is <b>{mv['ROC AUC']:.3f}</b>; accuracy at the {cutoff:.2f} cutoff is <b>{mv['Accuracy']:.1%}</b>.</div>",unsafe_allow_html=True)
             st.dataframe(styled_table(metrics,{"Value":"{:.6f}"}),use_container_width=True)
@@ -533,9 +470,8 @@ try:
         with tabs[3]: st.markdown("#### Hosmer–Lemeshow calibration groups"); st.dataframe(cal,use_container_width=True); st.markdown("#### Variance Inflation Factors"); st.dataframe(styled_table(vif,{"VIF":"{:.3f}"}),use_container_width=True); st.plotly_chart(px.scatter(pred,x="Predicted Probability",y="Deviance Residual",title="Deviance Residuals versus Probability",color_discrete_sequence=[PURPLE]),use_container_width=True)
         with tabs[4]: st.dataframe(pred,use_container_width=True,height=430)
         with tabs[5]: st.markdown("""<div class='callout'><b>How to read odds ratios</b><br>An odds ratio above 1 increases estimated event odds; below 1 decreases them, holding other included predictors constant. ROC AUC measures ranking across cutoffs. Accuracy depends on cutoff and class balance. Validate the model on unseen data before decision use.</div>""",unsafe_allow_html=True)
-        with tabs[6]: render_educational_tool()
         report=excel_report("Binary Logistic Regression",uploaded.name,sheet,{"Analysis Data":work,"Class Mapping":pd.DataFrame([{"Original Category":k,"Binary Code":v} for k,v in mapping.items()]),"Model Metrics":metrics,"Odds Ratios":coeff,"Confusion Matrix":matrix,"HL Calibration":cal,"VIF":vif,"Predictions":pred},[("Y Variable",y_col),("Event coded 1",str(event_label)),("X Variables",", ".join(x_cols)),("ROC AUC",mv["ROC AUC"]),("Accuracy",mv["Accuracy"]),("Classification cutoff",cutoff)])
-        with tabs[7]: st.download_button("⬇ Download formatted Excel report",report,f"MP1_Logistic_Regression_{datetime.now():%Y%m%d}.xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",use_container_width=True)
+        with tabs[6]: st.download_button("⬇ Download formatted Excel report",report,f"MP1_Logistic_Regression_{datetime.now():%Y%m%d}.xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",use_container_width=True)
 except Exception as e:
     st.error(f"Analysis could not be completed: {e}")
     st.info("Check that the selected variables contain usable values, Y is appropriate for the chosen model, both logistic classes are represented, and the number of predictors is reasonable for the sample size.")
