@@ -1,4 +1,5 @@
 
+
 import io
 import math
 from datetime import datetime
@@ -21,7 +22,7 @@ from statsmodels.stats.stattools import durbin_watson, jarque_bera
 
 
 st.set_page_config(
-    page_title="Regression Analytics Studio | Mountain Path Academy",
+    page_title="Regression Analytics Laboratory | Mountain Path Academy",
     page_icon="〽️",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -44,8 +45,8 @@ st.markdown(
 .stApp {{ background:linear-gradient(180deg,#F8FAFD,#EAF1F7); color:#172B3A; }}
 html, body, [class*="css"] {{ font-family:'Inter',sans-serif; }}
 [data-testid="stSidebar"] {{ background:linear-gradient(180deg,#081F3A,#124A78); color:#F7FAFC; }}
-[data-testid="stSidebar"] * {{ color:#FFFFFF !important; }}
-[data-testid="stSidebar"] label {{ font-weight:700 !important; color:{GOLD_2} !important; }}
+[data-testid="stSidebar"] h1,[data-testid="stSidebar"] h2,[data-testid="stSidebar"] h3,[data-testid="stSidebar"] p,[data-testid="stSidebar"] li {{ color:#F7FAFC; }}
+section[data-testid="stSidebar"] label p {{ color:#F3C84B!important; font-weight:850!important; }}
 [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] > div,
 [data-testid="stSidebar"] .stMultiSelect div[data-baseweb="select"] > div {{ background:#FFFFFF !important; color:#102A43 !important; }}
 [data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] span,
@@ -54,9 +55,15 @@ html, body, [class*="css"] {{ font-family:'Inter',sans-serif; }}
 .hero h1 {{ font-size:2.25rem; margin:0 0 8px; color:white; font-weight:900; }}
 .hero p {{ margin:0; color:#DDEAF4; line-height:1.55; }}
 .eyebrow {{ color:#F3C84B; text-transform:uppercase; letter-spacing:.14em; font-weight:900; font-size:.76rem; margin-bottom:.55rem; }}
-.mp-card {{ background:#FFFFFF; border:1px solid #DCE7F0; border-radius:16px; padding:1rem 1.15rem; box-shadow:0 7px 20px rgba(20,55,85,.07); height:100%; }}
-.mp-card h3 {{ color:{NAVY}; margin:.1rem 0 .5rem; }}
+.concept-card {{ background:white; border:1px solid #D9E5EF; border-top:5px solid #0B5CAD; padding:17px 18px; border-radius:15px; box-shadow:0 5px 16px rgba(18,54,84,.07); min-height:150px; }}
+.concept-card h3 {{ color:#0B2545; font-size:1.05rem; margin:0 0 7px; }}
+.concept-card p {{ color:#3C5368; font-size:.91rem; line-height:1.5; margin:0; }}
+.model-card {{ background:#FFFFFF; border:1px solid #D9E5EF; border-left:6px solid #0B5CAD; padding:18px 20px; border-radius:14px; box-shadow:0 5px 16px rgba(18,54,84,.06); min-height:205px; }}
+.model-card h3 {{ color:#0B2545; margin:0 0 8px; }}
+.model-card p,.model-card li {{ color:#3C5368; font-size:.91rem; line-height:1.5; }}
+.section-title {{ color:#0B2545; font-weight:900; margin-top:1.2rem; }}
 .callout {{ background:{CREAM}; border-left:6px solid {GOLD}; border-radius:10px; padding:.9rem 1rem; margin:.7rem 0; }}
+.teaching-note {{ background:#EAF7F5; border-left:5px solid #13A89E; padding:13px 16px; border-radius:10px; color:#153C3A; margin:10px 0; }}
 .good {{ background:#E9F8F0; border-left:6px solid {GREEN}; border-radius:10px; padding:.8rem 1rem; }}
 .warn {{ background:#FFF0F0; border-left:6px solid {RED}; border-radius:10px; padding:.8rem 1rem; }}
 div[data-testid="stMetric"] {{ background:white; border:1px solid #DDE8F1; border-top:4px solid {GOLD}; padding:12px; border-radius:13px; box-shadow:0 5px 15px rgba(20,55,85,.06); }}
@@ -350,24 +357,36 @@ def render_footer():
   <br><br><strong>Mountain Path Academy</strong> &nbsp;
   <a href='https://themountainpathacademy.com/courses' target='_blank'><strong>Explore courses</strong></a> &nbsp;·&nbsp;
   <a href='https://themountainpathacademy.com/contact' target='_blank'><strong>Contact &amp; enrol</strong></a><br>
-  <small>Regression Analytics Studio · Educational material only · Model output is not a substitute for professional judgement</small>
+  <small>Regression Analytics Laboratory · Educational material only · Model output is not a substitute for professional judgement</small>
 </div>
 """,unsafe_allow_html=True)
 
 
-st.markdown("""<div class="hero"><div class="eyebrow">Mountain Path Academy · Financial Analytics Studio</div><h1>Regression Analytics Laboratory</h1><p>Simple Linear Regression · Multiple Linear Regression · Binary Logistic Regression</p><p>Transform your own Excel data into model estimates, statistical diagnostics, interactive learning visuals and a professionally formatted report.</p></div>""",unsafe_allow_html=True)
+st.markdown("""<div class="hero"><div class="eyebrow">Mountain Path Academy · Global Financial Analytics Studio</div><h1>Regression Analytics Laboratory</h1><p>Simple Linear Regression · Multiple Linear Regression · Binary Logistic Regression</p><p>Use your own data to estimate relationships, test statistical significance, validate model assumptions and translate regression output into practical decision insights.</p></div>""",unsafe_allow_html=True)
 
 st.sidebar.markdown("## 〽️ Mountain Path Academy")
-st.sidebar.caption("Regression analytics learning laboratory")
+st.sidebar.caption("Global regression analytics laboratory")
 st.sidebar.markdown("### Model Control Centre")
 uploaded=st.sidebar.file_uploader("Upload Excel or CSV",type=["xlsx","xlsm","csv"])
-profile_block()
 
 if uploaded is None:
+    profile_block()
     c1,c2,c3=st.columns(3)
-    with c1: st.markdown("<div class='mp-card'><h3>① Upload</h3>Use your own Excel or CSV dataset. Multiple worksheets are supported.</div>",unsafe_allow_html=True)
-    with c2: st.markdown("<div class='mp-card'><h3>② Model</h3>Select SLR/MLR for continuous Y or logistic regression for binary Y.</div>",unsafe_allow_html=True)
-    with c3: st.markdown("<div class='mp-card'><h3>③ Interpret</h3>Review inference, assumptions, visual diagnostics and export the analysis.</div>",unsafe_allow_html=True)
+    with c1: st.markdown("<div class='concept-card'><h3>① Upload your data</h3><p>Use an Excel or CSV dataset. Multiple Excel worksheets are supported.</p></div>",unsafe_allow_html=True)
+    with c2: st.markdown("<div class='concept-card'><h3>② Select a model</h3><p>Choose SLR or MLR for a continuous outcome, or logistic regression for a binary outcome.</p></div>",unsafe_allow_html=True)
+    with c3: st.markdown("<div class='concept-card'><h3>③ Interpret and export</h3><p>Review coefficients, diagnostics, predictions and learning notes, then download a formatted Excel report.</p></div>",unsafe_allow_html=True)
+
+    st.markdown("<h2 class='section-title'>About this educational tool</h2>",unsafe_allow_html=True)
+    st.markdown("""<div class='callout'><b>Purpose:</b> This interactive laboratory connects regression theory with hands-on analysis. It guides learners from variable selection and estimation to inference, diagnostics, prediction and responsible interpretation. It is designed for classroom demonstrations, guided practice and exploratory analysis—not as an automated decision engine.</div>""",unsafe_allow_html=True)
+    a1,a2,a3=st.columns(3)
+    with a1:
+        st.markdown("""<div class='model-card'><h3>Simple Linear Regression (SLR)</h3><p><b>Use when:</b> one numeric X explains or predicts one continuous Y.</p><p><b>Model:</b> Y = β₀ + β₁X + ε</p><ul><li>Interpret slope and intercept</li><li>Review R², p-values and confidence intervals</li><li>Check residual linearity, normality and constant variance</li></ul></div>""",unsafe_allow_html=True)
+    with a2:
+        st.markdown("""<div class='model-card'><h3>Multiple Linear Regression (MLR)</h3><p><b>Use when:</b> several numeric X variables explain or predict one continuous Y.</p><p><b>Model:</b> Y = β₀ + β₁X₁ + … + βₖXₖ + ε</p><ul><li>Interpret each coefficient holding other X variables constant</li><li>Compare R² and adjusted R²</li><li>Check VIF, residual diagnostics and specification</li></ul></div>""",unsafe_allow_html=True)
+    with a3:
+        st.markdown("""<div class='model-card'><h3>Binary Logistic Regression</h3><p><b>Use when:</b> Y has two outcomes such as default/no default.</p><p><b>Model:</b> log[p/(1−p)] = β₀ + β₁X₁ + … + βₖXₖ</p><ul><li>Interpret odds ratios and predicted probabilities</li><li>Review ROC AUC, sensitivity and specificity</li><li>Study cutoff effects, calibration and class balance</li></ul></div>""",unsafe_allow_html=True)
+
+    st.markdown("""<div class='teaching-note'><b>Learning workflow:</b> Frame the question → choose Y and X → estimate the model → assess statistical significance → test assumptions and fit → interpret practical meaning → validate before decision use.</div>""",unsafe_allow_html=True)
     st.info("Upload a dataset from the left sidebar to begin.")
     render_footer()
     st.stop()
@@ -396,13 +415,15 @@ if model_choice.startswith("Binary"):
     events=list(pd.unique(df[y_col].dropna())); event_label=st.sidebar.selectbox("Event category coded 1",events,index=len(events)-1)
     cutoff=st.sidebar.slider("Classification cutoff",.10,.90,.50,.05)
 run=st.sidebar.button("Run Regression Analysis",use_container_width=True)
+profile_block()
 
 st.markdown("### Dataset overview")
 m1,m2,m3,m4=st.columns(4); m1.metric("Rows",f"{len(df):,}"); m2.metric("Columns",len(df.columns)); m3.metric("Numeric candidates",len(nums)); m4.metric("Missing cells",f"{int(df.isna().sum().sum()):,}")
 with st.expander("Preview uploaded data",expanded=False): st.dataframe(df.head(100),use_container_width=True,height=330)
 
 if not run:
-    st.markdown("<div class='callout'><b>Ready:</b> choose the model and variables in the MP1 Control Centre, then click <b>Run Regression Analysis</b>.</div>",unsafe_allow_html=True)
+    st.markdown("<div class='callout'><b>Ready:</b> choose the model and variables in the Model Control Centre, then click <b>Run Regression Analysis</b>.</div>",unsafe_allow_html=True)
+    render_footer()
     st.stop()
 if not x_cols: st.error("Select at least one X variable."); st.stop()
 
